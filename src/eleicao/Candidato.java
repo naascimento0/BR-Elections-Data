@@ -30,7 +30,14 @@ public abstract class Candidato {
         this.nomeTipoDestVotos = nomeTipoDestVotos;
     }
 
-    
+    @Override
+    public String toString() {
+        return "Candidato [codigoCargo=" + codigoCargo + ", codigoGenero=" + codigoGenero + ", codigoSituacaoCandidato="
+                + codigoSituacaoCandidato + ", codigoSituacaoTurno=" + codigoSituacaoTurno + ", dataNascimento="
+                + dataNascimento + ", nome=" + nome + ", nomeNaUrna=" + nomeNaUrna + ", nomeTipoDestVotos="
+                + nomeTipoDestVotos + ", numeroCandidato=" + numeroCandidato + ", numeroFederacao=" + numeroFederacao
+                + ", partido=" + partido + "]\n";
+    }
     
 
     
