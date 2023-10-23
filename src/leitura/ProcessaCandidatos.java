@@ -7,14 +7,15 @@ import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
-import eleicao.Candidato;
 import eleicao.CandidatoEstadual;
 import eleicao.CandidatoFederal;
 import eleicao.Partido;
+import eleicao.Genero;
+//import eleicao.Situacao;
 import java.time.LocalDate;
 
-public class ProcessaDados {
-    public static HashMap<String, Partido> processarDados() throws Exception {
+public class ProcessaCandidatos {
+    public static HashMap<String, Partido> processarCandidatos() throws Exception {
         String nome = "";
         String nomeNaUrna = "";
         String codigoCargo = ""; //6=federal 7=estadual
@@ -88,22 +89,22 @@ public class ProcessaDados {
                     Partido partido = partidos.get(numeroPartido);
                     if(partido == null) {
                         partido = new Partido(siglaPartido, numeroPartido);
-                        if(!numeroFederacao.equals("-1"))
-                            System.out.println("Numero Federacao: " + numeroFederacao + ", Sigla Partido: " + siglaPartido);
                         partidos.put(numeroPartido, partido);
                     }
-
-                    Candidato c = null;
-                    if(codigoCargo.equals("6"))
-                        c = new CandidatoFederal(nome, nomeNaUrna, Integer.parseInt(codigoCargo), Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
-                        partido, Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Integer.parseInt(codigoGenero), numeroTipoDestVotos);
-                    else if(codigoCargo.equals("7"))
-                        c = new CandidatoEstadual(nome, nomeNaUrna, Integer.parseInt(codigoCargo), Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
-                        partido, Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Integer.parseInt(codigoGenero), numeroTipoDestVotos); 
-                    
-                    partido.addCandidato(c);
+        
+                    if(codigoCargo.equals("6")){
+                        CandidatoFederal c = new CandidatoFederal(nome, nomeNaUrna, Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
+                        partido, Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Genero.getGenero(codigoGenero), numeroTipoDestVotos);
+                        partido.addCandidatoFederal(c);
+                    }
+                    else if(codigoCargo.equals("7")){
+                        CandidatoEstadual c = new CandidatoEstadual(nome, nomeNaUrna, Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
+                        partido, Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Genero.getGenero(codigoGenero), numeroTipoDestVotos); 
+                        partido.addCandidatoEstadual(c);
+                    }
                 }
             }
+
         } catch(Exception e) {
             e.printStackTrace();
         }
