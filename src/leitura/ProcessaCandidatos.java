@@ -1,21 +1,22 @@
 package leitura;
 
 import java.io.FileInputStream;
-// import java.io.FileOutputStream;
-// import java.io.PrintStream;
+
 import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
-import eleicao.CandidatoEstadual;
-import eleicao.CandidatoFederal;
-import eleicao.Partido;
-import eleicao.Genero;
+import eleicao.candidato.Candidato;
+import eleicao.candidato.Genero;
+
+import eleicao.agremiacao.Partido;
+
+
 //import eleicao.Situacao;
 import java.time.LocalDate;
 
 public class ProcessaCandidatos {
-    public static HashMap<String, Partido> processarCandidatos() throws Exception {
+    public static HashMap<String, Partido> processarCandidatos(int cargo) throws Exception {
         String nome = "";
         String nomeNaUrna = "";
         String codigoCargo = ""; //6=federal 7=estadual
@@ -31,16 +32,16 @@ public class ProcessaCandidatos {
         
         HashMap<String, Partido> partidos = new HashMap<>();
 
-        try(FileInputStream entrada = new FileInputStream("arquivos/consulta_cand_2022_SC.csv"); //depois colocar para ler o argv
+        try(FileInputStream entrada = new FileInputStream("arquivos/consulta_cand_2022_SC.csv"); //depois colocar para ler o diretorio do arquivo no argv
         Scanner s = new Scanner(entrada, "ISO-8859-1")) {
             s.nextLine();
             while(s.hasNextLine()) {
                 String line = s.nextLine();
-                try(Scanner lineScanner = new Scanner(line)){
+                try(Scanner lineScanner = new Scanner(line)) {
                     lineScanner.useDelimiter(";");
                     int i = 0;
                     while(lineScanner.hasNext()) {
-                        switch(i) {
+                        switch(i++) {
                             case 13:
                                 codigoCargo = lineScanner.next().replace("\"", "");
                                 break;
@@ -81,7 +82,6 @@ public class ProcessaCandidatos {
                                 lineScanner.next();
                                 break;
                         }
-                        i++;
                     }
 
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd,MM,yyyy");
@@ -92,49 +92,20 @@ public class ProcessaCandidatos {
                         partidos.put(numeroPartido, partido);
                     }
         
-                    if(codigoCargo.equals("6")){
-                        CandidatoFederal c = new CandidatoFederal(nome, nomeNaUrna, Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
+                    if(Integer.parseInt(codigoCargo) == cargo) {
+                        Candidato c = new Candidato(nome, nomeNaUrna, Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
                         partido, Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Genero.getGenero(codigoGenero), numeroTipoDestVotos);
-                        partido.addCandidatoFederal(c);
+                        partido.addCandidato(c);
                     }
-                    else if(codigoCargo.equals("7")){
-                        CandidatoEstadual c = new CandidatoEstadual(nome, nomeNaUrna, Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
-                        partido, Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Genero.getGenero(codigoGenero), numeroTipoDestVotos); 
-                        partido.addCandidatoEstadual(c);
-                    }
+
+                } catch(Exception e){
+                    e.printStackTrace();
                 }
             }
 
         } catch(Exception e) {
             e.printStackTrace();
         }
-
-        /*try {
-            // Especifique o nome do arquivo para onde deseja redirecionar a saída.
-            String nomeArquivo = "saida.txt";
-
-            // Crie um objeto FileOutputStream para escrever no arquivo.
-            FileOutputStream arquivoSaida = new FileOutputStream(nomeArquivo);
-
-            // Crie um objeto PrintStream que irá escrever no arquivo.
-            PrintStream printStream = new PrintStream(arquivoSaida);
-
-            // Redirecione a saída padrão (System.out) para o arquivo.
-            System.setOut(printStream);
-
-            // Agora, qualquer coisa que você imprima usando System.out.println será escrita no arquivo.
-            System.out.println("Isso será gravado no arquivo.");
-
-            for (Partido p : partidos.values()) {
-                System.out.println(p);
-            }
-
-            // Lembre-se de fechar o arquivo quando terminar.
-            arquivoSaida.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
         return partidos;
     }

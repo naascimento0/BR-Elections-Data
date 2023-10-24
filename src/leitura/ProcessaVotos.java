@@ -4,11 +4,11 @@ import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import eleicao.Partido;
-import eleicao.Candidato;
+import eleicao.agremiacao.Partido;
+import eleicao.candidato.Candidato;
 
 public class ProcessaVotos {
-    public static void processarVotos(HashMap<String, Partido> partidos) throws Exception {
+    public static void processarVotos(HashMap<String, Partido> partidos, int cargo) throws Exception {
         String codigoCargo = "";
         String numeroCandidato = "";
         String qtdVotos = "";
@@ -22,7 +22,7 @@ public class ProcessaVotos {
                     lineScanner.useDelimiter(";");
                     int i = 0;
                     while(lineScanner.hasNext()) {
-                        switch(i) {
+                        switch(i++) {
                             case 17:
                                 codigoCargo = lineScanner.next().replace("\"", "");
                                 break;
@@ -36,8 +36,8 @@ public class ProcessaVotos {
                                 lineScanner.next();
                                 break;
                         }
-                        i++;
                     }
+                    
                     int numeroCandidatoInt = Integer.parseInt(numeroCandidato);
                     if(numeroCandidatoInt == 95 || numeroCandidatoInt == 96 || numeroCandidatoInt == 97 || numeroCandidatoInt == 98){
                         continue;
@@ -49,22 +49,24 @@ public class ProcessaVotos {
                     // System.out.println("NUMERO CANDIDATO: " + numeroCandidato);
 
                     Candidato c = null;
-
-                    if(codigoCargo.equals("6"))
-                        c = p.getCandidatoFederal(numeroCandidato);
-                    else if(codigoCargo.equals("7")) {
-                        c = p.getCandidatoEstadual(numeroCandidato);
-                        // System.out.println(c);
+                    
+                    if(Integer.parseInt(codigoCargo) == cargo) {
+                        c = p.getCandidato(numeroCandidato);
+                        if(c == null) {
+                            p.addVotosLegenda(Integer.parseInt(qtdVotos));
+                            continue;
+                        }
                     }
-
-                    if(c == null) continue;
-
-                    // System.out.println();
+                    else
+                        continue;
 
                     if(c.getNomeTipoDestVotos().equals("Válido (legenda)"))
                         p.addVotosLegenda(Integer.parseInt(qtdVotos));
                     else
                         c.addQuantidadeVotos(Integer.parseInt(qtdVotos));
+                
+                } catch(Exception e){
+                    e.printStackTrace();
                 }
             }
         } catch(Exception e) {
