@@ -1,4 +1,4 @@
-package eleicao;
+package eleicao.candidato;
 public enum Genero {
     MASCULINO("2"),
     FEMININO("4");

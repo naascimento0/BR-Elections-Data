@@ -1,8 +1,11 @@
-package eleicao;
+package eleicao.candidato;
+
+import eleicao.agremiacao.Partido;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 
-public abstract class Candidato {
+public class Candidato {
     private String nome;
     private String nomeNaUrna;
     private int codigoSituacaoCandidato;
@@ -61,6 +64,22 @@ public abstract class Candidato {
     public boolean isEleito() {
         return codigoSituacaoTurno == 2 || codigoSituacaoTurno == 3;
     }
+    
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public String getNomeNaUrna() {
+        return nomeNaUrna;
+    }
+
+    public Genero getGenero() {
+        return genero;
+    }
+
+    public int getCodigoSituacaoCandidato() {
+        return codigoSituacaoCandidato;
+    }
 
     @Override
     public String toString() {
@@ -70,7 +89,12 @@ public abstract class Candidato {
     public static class ComparadorVotos implements Comparator<Candidato> {
         @Override
         public int compare(Candidato c1, Candidato c2){
-            return c2.getQuantidadeVotos() - c1.getQuantidadeVotos();
+            int diff = c2.getQuantidadeVotos() - c1.getQuantidadeVotos();
+            if(diff == 0) {
+                // data de nascimento
+                return c2.getDataNascimento().compareTo(c1.getDataNascimento());       
+            }
+            return diff;
         }
     }
 }

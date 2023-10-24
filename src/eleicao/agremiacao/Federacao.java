@@ -1,4 +1,4 @@
-package eleicao;
+package eleicao.agremiacao;
 
 import java.util.LinkedList;
 
