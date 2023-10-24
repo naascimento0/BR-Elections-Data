@@ -1,74 +1,83 @@
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+// import java.io.FileOutputStream;
+// import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
-import java.util.Locale;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import leitura.ProcessaCandidatos;
 import leitura.ProcessaVotos;
-import eleicao.Candidato;
-import eleicao.CandidatoEstadual;
-import eleicao.CandidatoFederal;
-import eleicao.Partido;
-import eleicao.Candidato.ComparadorVotos;
-import eleicao.Federacao;
+
+import eleicao.candidato.Candidato;
+import eleicao.agremiacao.Partido;
+import eleicao.agremiacao.Federacao;
+import eleicao.Estatisticas;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        HashMap<String, Partido> partidos = ProcessaCandidatos.processarCandidatos();
-        
-        Set<Federacao> federacoes = new HashSet<>();
-        
-        for(Partido p : partidos.values()) {
-            Set<Candidato> candidatos = p.getCandidatosFederais() == null ?  p.getCandidatosEstaduais() : p.getCandidatosFederais();
-            // if(candidatos == null)
-            //     candidatos = p.getCandidatosEstaduais();
-            Candidato c = candidatos.stream().findFirst().get();
+        int cargo = 7;
+        // if(args[0].equals("--federal"))
+        //     cargo = 6;
+        // else if(args[0].equals("--estadual")) 
+        //     cargo = 7;
+        // else
+        //     throw new Exception("Argumento inválido. Use --federal ou --estadual");
 
-            if(c.getNumeroFederacao() != -1) {
-                boolean federacaoExiste = false;
-                for(Federacao f : federacoes) {
-                    if(f.getNumeroFederacao() == c.getNumeroFederacao()){
-                        f.addPartido(p);
-                        federacaoExiste = true;
-                        break;
-                    }
-                }
-                if(!federacaoExiste) {
-                    Federacao f = new Federacao(c.getNumeroFederacao());
-                    federacoes.add(f);
-                    f.addPartido(p);
-                }
-            }
-        }
+        HashMap<String, Partido> partidos = ProcessaCandidatos.processarCandidatos(cargo);
+        Set<Federacao> federacoes = criaFederacoes(partidos);
+        ProcessaVotos.processarVotos(partidos, cargo);
 
-        ProcessaVotos.processarVotos(partidos);
+        // primeiro e segundo relatorio
+        List<Candidato> candidatosEleitos = Estatisticas.getCandidatosEleitos(partidos);
+        System.out.println("Número de vagas: " + candidatosEleitos.size() + "\n");
+        String text = cargo == 6 ? "Deputados federais eleitos:" : "Deputados estaduais eleitos:";
+        System.out.println(text);
+        Estatisticas.printCandidatos(candidatosEleitos, federacoes);
 
-        List<Candidato> candidatosEleitos = new ArrayList<>();
-        for(Partido p : partidos.values()) {
-            Set<Candidato> candidatoFederais = p.getCandidatosFederais();
-            Set<Candidato> candidatosEstaduais = p.getCandidatosEstaduais();
-
-            for(Candidato c : candidatoFederais) { if(c.isEleito()) candidatosEleitos.add(c); }
-
-            for(Candidato c : candidatosEstaduais) { if(c.isEleito()) candidatosEleitos.add(c); }
-        }
-
-        System.out.println("Número de vagas: " + candidatosEleitos.size());
         System.out.println();
+        // terceiro relatorio
+        System.out.println("Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):");
+        List<Candidato> candidatosMaisVotados = Estatisticas.getCandidatosMaisVotados(partidos, candidatosEleitos.size());
+        Estatisticas.printCandidatos(candidatosMaisVotados, federacoes);
 
-        Collections.sort(candidatosEleitos, new Candidato.ComparadorVotos());
+        System.out.println();
+        // quarto relatorio...
+        System.out.println("Teriam sido eleitos se a votação fosse majoritária, e não foram eleitos:");
+        List<Candidato> candidatosEleitosMajoritaria = Estatisticas.getCandidatosEleitosMajoritaria(candidatosEleitos, candidatosMaisVotados);
+        Estatisticas.printCandidatos(candidatosEleitosMajoritaria, federacoes);
 
-        int i = 1;
-        for(Candidato c : candidatosEleitos) {
-            System.out.print(i + " - " + c);
-            System.out.printf(Locale.ITALY, "%,d votos)\n", c.getQuantidadeVotos());
-            i++;
-        }
+        System.out.println();
+        // quinto relatorio...
+        System.out.println("Eleitos, que se beneficiaram do sistema proporcional:");
+        List<Candidato> candidatosEleitosProporcional = Estatisticas.getCandidatosEleitosProporcional(candidatosEleitos, candidatosMaisVotados);
+        Estatisticas.printCandidatos(candidatosEleitosProporcional, federacoes);
+
+        System.out.println();
+        // sexto relatorio...
+        System.out.println("Votação dos partidos e número de candidatos eleitos:");
+
+
+        // sétimo relatorio...
+        System.out.println("Primeiro e último colocados de cada partido:");
+
+
+        // oitavo relatorio...
+        System.out.println("Eleitos, por faixa etária (na data da eleição):");
+
+
+        // nono relatorio...
+        System.out.println("Eleitos, por gênero:");
+        System.out.println("Feminino: ");
+
+        System.out.println("Masculino: ");
+
+        // decimo relatorio...
+        System.out.println("Total de votos válidos: ");
+
+        System.out.println("Total de votos nominais: ");
+
+        System.out.println("Total de votos de legenda: ");
+
 
         // try {
         //     // Especifique o nome do arquivo para onde deseja redirecionar a saída.
@@ -97,5 +106,33 @@ public class App {
         // } catch (Exception e) {
         //     e.printStackTrace();
         // }
+    }
+
+    public static Set<Federacao> criaFederacoes(HashMap<String, Partido> partidos) {
+        Set<Federacao> federacoes = new HashSet<>();
+
+        for (Partido p : partidos.values()) {
+            List<Candidato> candidatos = p.getCandidatos();
+            if(candidatos.isEmpty()) continue;
+            Candidato c = candidatos.stream().findFirst().get();
+
+            if(c.getNumeroFederacao() != -1) {
+                boolean federacaoExiste = false;
+                for(Federacao f : federacoes) {
+                    if(f.getNumeroFederacao() == c.getNumeroFederacao()) {
+                        f.addPartido(p);
+                        federacaoExiste = true;
+                        break;
+                    }
+                }
+                if(!federacaoExiste) {
+                    Federacao f = new Federacao(c.getNumeroFederacao());
+                    federacoes.add(f);
+                    f.addPartido(p);
+                }
+            }
+        }
+
+        return federacoes;
     }
 }
