@@ -92,7 +92,7 @@ public class Candidato {
             int diff = c2.getQuantidadeVotos() - c1.getQuantidadeVotos();
             if(diff == 0) {
                 // data de nascimento
-                return c2.getDataNascimento().compareTo(c1.getDataNascimento());       
+                return c1.getDataNascimento().compareTo(c2.getDataNascimento());       
             }
             return diff;
         }
