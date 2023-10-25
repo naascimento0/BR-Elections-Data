@@ -55,11 +55,20 @@ public class App {
         System.out.println();
         // sexto relatorio...
         System.out.println("Votação dos partidos e número de candidatos eleitos:");
+        Estatisticas.printPartidosComVotos(partidos);
+        // essa funcao ^^ falta printar ordenado
 
 
+        // pra nao esquecer: guardar uma variavel "votosNominais" em Partido
+        // vamos precisar dos votos nominais pra ordenar e pra alguns relatorios
+        // mais facil ter ela no partido do que calcular toda vez
+
+
+
+        System.out.println();
         // sétimo relatorio...
         System.out.println("Primeiro e último colocados de cada partido:");
-
+        // 1 - REPUBLICANOS - 10, SERGIO MENEGUELLI (10456, 138.523 votos) / HÉLIO GUILHERME (10789, 53 votos)
 
         // oitavo relatorio...
         System.out.println("Eleitos, por faixa etária (na data da eleição):");

@@ -86,4 +86,23 @@ public class Estatisticas {
 
         return candidatosEleitosProporcional;
     }
+
+    public static void printPartidosComVotos(HashMap<String, Partido> partidos) {
+        int i = 1;
+        for(Partido p : partidos.values()) {
+            int qtdEleitos = 0;
+            int qtdVotosNominais = 0, qtdVotosLegenda = 0;
+
+            System.out.print(i + " - ");
+            System.out.print(p.getSiglaPartido() + " - " + p.getNumeroPartido() + ", ");
+            qtdVotosLegenda = p.getVotosLegenda();
+
+            for(Candidato c : p.getCandidatos()) {
+                if(c.isEleito()) qtdEleitos++;
+                qtdVotosNominais += c.getQuantidadeVotos();
+            }
+
+            System.out.printf(Locale.ITALY, "%,d votos (%,d nominais e %,d de legenda), %d candidatos eleitos\n", (qtdVotosLegenda + qtdVotosNominais), qtdVotosNominais, qtdVotosLegenda, qtdEleitos);
+        }
+    }
 }
