@@ -28,7 +28,7 @@ public class ProcessaCandidatos {
         String dataNascimento = ""; // tem que ser dia/mes/ano (nao sei se localdate deixa nesse formato)
         String codigoSituacaoTurno = ""; // 2 ou 3 = eleito
         String codigoGenero = ""; // 2 = MASCULINO 4 = FEMININO
-        String numeroTipoDestVotos = ""; // nominal ou legenda  
+        String nomeTipoDestVotos = ""; // nominal ou legenda  
         
         HashMap<String, Partido> partidos = new HashMap<>();
 
@@ -73,7 +73,7 @@ public class ProcessaCandidatos {
                                 codigoSituacaoTurno = lineScanner.next().replace("\"", "");
                                 break;
                             case 67:
-                                numeroTipoDestVotos = lineScanner.next().replace("\"", "");
+                                nomeTipoDestVotos = lineScanner.next().replace("\"", "");
                                 break;
                             case 68:
                                 codigoSituacaoCandidato = lineScanner.next().replace("\"", "");
@@ -91,10 +91,10 @@ public class ProcessaCandidatos {
                         partido = new Partido(siglaPartido, numeroPartido);
                         partidos.put(numeroPartido, partido);
                     }
-        
+                    //&& (nomeTipoDestVotos.equals("Válido") || nomeTipoDestVotos.equals("Válido (legenda)"))
                     if(Integer.parseInt(codigoCargo) == cargo) {
                         Candidato c = new Candidato(nome, nomeNaUrna, Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
-                        partido, Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Genero.getGenero(codigoGenero), numeroTipoDestVotos);
+                        partido, Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Genero.getGenero(codigoGenero), nomeTipoDestVotos);
                         partido.addCandidato(c);
                     }
 
