@@ -1,4 +1,5 @@
 package eleicao.agremiacao;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,7 @@ public class Partido {
     private String numeroPartido;
     private Map<String, Candidato> candidatos = new HashMap<String, Candidato>();
     private int votosLegenda;
+    private int votosNominais;
 
     public Partido(String siglaPartido, String numeroPartido) {
         this.siglaPartido = siglaPartido;
@@ -46,6 +48,44 @@ public class Partido {
         return numeroPartido;
     }
 
+    public int getVotosNominais() {
+        return votosNominais;
+    }
+
+    public void addVotosNominais(int qtdVotos) {
+        this.votosNominais += qtdVotos;
+    }
+
+    public int getVotosTotais() {
+        return votosLegenda + votosNominais;
+    }
+
+    public Candidato getCandidatoMaisVotado() {
+        Candidato maisVotado = null;
+        int i = 0;
+        for(Candidato c : candidatos.values()) {
+            if(i++ == 0) {
+                maisVotado = c;
+                if(maisVotado == null) return null;
+                continue;
+            }
+            if(c.getQuantidadeVotos() > maisVotado.getQuantidadeVotos())
+                maisVotado = c;
+        }
+
+        return maisVotado;
+    }
+
+    public Candidato getCandidatoMenosVotado() {
+        Candidato menosVotado = candidatos.values().stream().findFirst().get();
+        for(Candidato c : candidatos.values()) {
+            if(c.getQuantidadeVotos() < menosVotado.getQuantidadeVotos())
+                menosVotado = c;
+        }
+
+        return menosVotado;
+    }
+
     /*@Override
     public String toString() {
         String text = "Partido [siglaPartido=" + siglaPartido + ", numeroPartido=" + numeroPartido + ", candidatos= ";
@@ -56,4 +96,34 @@ public class Partido {
 
         return text;
     }*/
+
+    public static class ComparadorVotos implements Comparator<Partido> {
+        @Override
+        public int compare(Partido p1, Partido p2){
+            int diff = p2.getVotosTotais() - p1.getVotosTotais();
+            if(diff == 0) {
+                // data de nascimento
+                return p2.getNumeroPartido().compareTo(p1.getNumeroPartido());       
+            }
+            return diff;
+        }
+    }
+
+    public static class ComparadorCandidatoMaisVotado implements Comparator<Partido> {
+        @Override
+        public int compare(Partido p1, Partido p2) {
+            Candidato c1 = p1.getCandidatoMaisVotado();
+            Candidato c2 = p2.getCandidatoMaisVotado();
+            if(c1 == null)
+                return 1;
+            if(c2 == null)
+                return -1;
+
+            int diff = c2.getQuantidadeVotos() - c1.getQuantidadeVotos();
+            if(diff == 0) {
+                return c1.getNumeroCandidato().compareTo(c2.getNumeroCandidato());       
+            }
+            return diff;
+        }
+    }
 }

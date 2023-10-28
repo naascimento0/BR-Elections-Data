@@ -1,5 +1,7 @@
 // import java.io.FileOutputStream;
 // import java.io.PrintStream;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,66 +30,59 @@ public class App {
         ProcessaVotos.processarVotos(partidos, cargo);
 
         // primeiro e segundo relatorio
-        List<Candidato> candidatosEleitos = Estatisticas.getCandidatosEleitos(partidos);
+        List<Candidato> candidatosEleitos = Estatisticas.getCandidatosEleitosOrdenados(partidos);
         System.out.println("Número de vagas: " + candidatosEleitos.size() + "\n");
         String text = cargo == 6 ? "Deputados federais eleitos:" : "Deputados estaduais eleitos:";
         System.out.println(text);
-        Estatisticas.printCandidatos(candidatosEleitos, federacoes);
+        Estatisticas.printCandidatos(candidatosEleitos, federacoes, partidos);
 
         System.out.println();
         // terceiro relatorio
         System.out.println("Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):");
         List<Candidato> candidatosMaisVotados = Estatisticas.getCandidatosMaisVotados(partidos, candidatosEleitos.size());
-        Estatisticas.printCandidatos(candidatosMaisVotados, federacoes);
+        Estatisticas.printCandidatos(candidatosMaisVotados, federacoes, partidos);
 
         System.out.println();
         // quarto relatorio...
         System.out.println("Teriam sido eleitos se a votação fosse majoritária, e não foram eleitos:");
         List<Candidato> candidatosEleitosMajoritaria = Estatisticas.getCandidatosEleitosMajoritaria(candidatosEleitos, candidatosMaisVotados);
-        Estatisticas.printCandidatos(candidatosEleitosMajoritaria, federacoes);
+        Estatisticas.printCandidatos(candidatosEleitosMajoritaria, federacoes, partidos);
 
         System.out.println();
         // quinto relatorio...
         System.out.println("Eleitos, que se beneficiaram do sistema proporcional:");
         List<Candidato> candidatosEleitosProporcional = Estatisticas.getCandidatosEleitosProporcional(candidatosEleitos, candidatosMaisVotados);
-        Estatisticas.printCandidatos(candidatosEleitosProporcional, federacoes);
+        Estatisticas.printCandidatos(candidatosEleitosProporcional, federacoes, partidos);
 
         System.out.println();
         // sexto relatorio...
         System.out.println("Votação dos partidos e número de candidatos eleitos:");
-        Estatisticas.printPartidosComVotos(partidos);
-        // essa funcao ^^ falta printar ordenado
-
-
-        // pra nao esquecer: guardar uma variavel "votosNominais" em Partido
-        // vamos precisar dos votos nominais pra ordenar e pra alguns relatorios
-        // mais facil ter ela no partido do que calcular toda vez
-
-
+        Estatisticas.printPartidosComVotos(new ArrayList<Partido>(partidos.values()));
 
         System.out.println();
         // sétimo relatorio...
         System.out.println("Primeiro e último colocados de cada partido:");
-        // 1 - REPUBLICANOS - 10, SERGIO MENEGUELLI (10456, 138.523 votos) / HÉLIO GUILHERME (10789, 53 votos)
+        Estatisticas.printPrimeiroUltimoColocados(new ArrayList<Partido>(partidos.values()));
 
+        System.out.println();
         // oitavo relatorio...
         System.out.println("Eleitos, por faixa etária (na data da eleição):");
+        LocalDate date = LocalDate.of(2022, 1, 1);
+        Estatisticas.printEleitosPorFaixaEtaria(candidatosEleitos, date);
 
-
+        System.out.println();
+        // oitavo relatorio...
         // nono relatorio...
         System.out.println("Eleitos, por gênero:");
-        System.out.println("Feminino: ");
+        Estatisticas.printEleitosPorGenero(candidatosEleitos);
 
-        System.out.println("Masculino: ");
-
+        System.out.println();
+        // oitavo relatorio...
         // decimo relatorio...
-        System.out.println("Total de votos válidos: ");
+        Estatisticas.printTotalVotos(partidos);
 
-        System.out.println("Total de votos nominais: ");
-
-        System.out.println("Total de votos de legenda: ");
-
-
+        System.out.println();
+        // oitavo relatorio...
         // try {
         //     // Especifique o nome do arquivo para onde deseja redirecionar a saída.
         //     String nomeArquivo = "saida.txt";
@@ -145,3 +140,38 @@ public class App {
         return federacoes;
     }
 }
+
+
+/*
+
+package numberformat;
+
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
+import java.util.Scanner;
+
+public class NumberFormatTest {
+
+	public static void main(String[] args) {
+		NumberFormat nf = NumberFormat.getInstance(Locale.GERMAN);
+
+		try (Scanner s = new Scanner(System.in)) {
+			System.out.print("Entre com um número: ");
+			boolean entradaValida = false;
+			do {
+				try {
+					if (s.hasNext()) {
+						int i = nf.parse(s.next()).intValue();
+						entradaValida = true;
+						System.out.println("O número entrado foi: " + i);
+					}
+				} catch (ParseException e) {
+					System.out.print("Formato incorreto. Entre novamente com um número: ");
+				}
+			} while (!entradaValida);
+		}
+	}
+
+}
+*/
