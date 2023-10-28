@@ -62,8 +62,10 @@ public class ProcessaVotos {
 
                     if(c.getNomeTipoDestVotos().equals("Válido (legenda)"))
                         p.addVotosLegenda(Integer.parseInt(qtdVotos));
-                    else
+                    else {
                         c.addQuantidadeVotos(Integer.parseInt(qtdVotos));
+                        p.addVotosNominais(Integer.parseInt(qtdVotos));
+                    }
                 
                 } catch(Exception e){
                     e.printStackTrace();

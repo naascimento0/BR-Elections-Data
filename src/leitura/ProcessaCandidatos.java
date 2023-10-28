@@ -94,7 +94,7 @@ public class ProcessaCandidatos {
                     //&& (nomeTipoDestVotos.equals("Válido") || nomeTipoDestVotos.equals("Válido (legenda)"))
                     if(Integer.parseInt(codigoCargo) == cargo) {
                         Candidato c = new Candidato(nome, nomeNaUrna, Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
-                        partido, Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Genero.getGenero(codigoGenero), nomeTipoDestVotos);
+                            Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Genero.getGenero(codigoGenero), nomeTipoDestVotos);
                         partido.addCandidato(c);
                     }
 
