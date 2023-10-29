@@ -49,6 +49,10 @@ public class Candidato {
         return nomeTipoDestVotos;
     }
 
+    public boolean isCandidaturaDeferida(){
+        return codigoSituacaoCandidato == 2 || codigoSituacaoCandidato == 16;
+    }
+
     public boolean isEleito() {
         return codigoSituacaoTurno == 2 || codigoSituacaoTurno == 3;
     }

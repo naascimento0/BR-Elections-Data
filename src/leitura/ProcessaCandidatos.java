@@ -83,19 +83,17 @@ public class ProcessaCandidatos {
                                 break;
                         }
                     }
-
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd,MM,yyyy");
                     
-                    Partido partido = partidos.get(numeroPartido);
-                    if(partido == null) {
-                        partido = new Partido(siglaPartido, numeroPartido);
+                    if(!partidos.containsKey(numeroPartido)) {
+                        Partido partido = new Partido(siglaPartido, numeroPartido);
                         partidos.put(numeroPartido, partido);
                     }
-                    //&& (nomeTipoDestVotos.equals("Válido") || nomeTipoDestVotos.equals("Válido (legenda)"))
-                    if(Integer.parseInt(codigoCargo) == cargo && (nomeTipoDestVotos.equals("Válido") || nomeTipoDestVotos.equals("Válido (legenda)"))) {
+                    
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd,MM,yyyy");
+                    if(Integer.parseInt(codigoCargo)  == cargo && (nomeTipoDestVotos.equals("Válido") || nomeTipoDestVotos.equals("Válido (legenda)"))) {
                         Candidato c = new Candidato(nome, nomeNaUrna, Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
                             Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Genero.getGenero(codigoGenero), nomeTipoDestVotos);
-                        partido.addCandidato(c);
+                        partidos.get(numeroPartido).addCandidato(c);
                     }
 
                 } catch(Exception e){

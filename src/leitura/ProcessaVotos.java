@@ -39,30 +39,46 @@ public class ProcessaVotos {
                     }
                     
                     int numeroCandidatoInt = Integer.parseInt(numeroCandidato);
-                    if(numeroCandidatoInt == 95 || numeroCandidatoInt == 96 || numeroCandidatoInt == 97 || numeroCandidatoInt == 98){
+                    if(numeroCandidatoInt == 95 || numeroCandidatoInt == 96 || numeroCandidatoInt == 97 || numeroCandidatoInt == 98)
                         continue;
-                    }
-                    
-                    Partido p = partidos.get(numeroCandidato.substring(0, 2));
 
-                    Candidato c = null;
-                    
-                    if(Integer.parseInt(codigoCargo) == cargo) {
-                        c = p.getCandidato(numeroCandidato);
-                        if(c == null) {
-                            p.addVotosLegenda(Integer.parseInt(qtdVotos));
-                            continue;
+                    int votos = Integer.parseInt(qtdVotos);
+
+                    if(Integer.parseInt(codigoCargo) == cargo){
+                        if(partidos.containsKey(numeroCandidato))
+                            partidos.get(numeroCandidato).addVotosLegenda(votos);
+                        else{
+                            String numeroPartido = numeroCandidato.substring(0, 2);                
+                            if(partidos.containsKey(numeroPartido)){
+                                Partido p = partidos.get(numeroPartido);
+                                Candidato c = p.getCandidato(numeroCandidato);
+                                if(c != null){
+                                    if(c.isCandidaturaDeferida()){
+                                        c.addQuantidadeVotos(votos);
+                                        p.addVotosNominais(votos);
+                                    }else if(c.getNomeTipoDestVotos().equals("Válido (legenda)"))
+                                        p.addVotosLegenda(votos);                                  
+                                }
+                            }
                         }
                     }
-                    else
-                        continue;
 
-                    if(c.getNomeTipoDestVotos().equals("Válido (legenda)"))
-                        p.addVotosLegenda(Integer.parseInt(qtdVotos));
-                    else if(c.getNomeTipoDestVotos().equals("Válido")) {
-                        c.addQuantidadeVotos(Integer.parseInt(qtdVotos));
-                        p.addVotosNominais(Integer.parseInt(qtdVotos));
-                    }
+                    /*if(Integer.parseInt(codigoCargo) == cargo) {
+                        Partido p = partidos.get(numeroCandidato.substring(0, 2));
+                        Candidato c = p.getCandidato(numeroCandidato);
+                        int votos = Integer.parseInt(qtdVotos);
+
+                        if(c == null){
+                            p.addVotosLegenda(votos);
+                        }
+                        else{                                     
+                             if(c.isCandidaturaDeferida()){
+                                c.addQuantidadeVotos(votos);
+                                p.addVotosNominais(votos);
+                            }else if(c.getNomeTipoDestVotos().equals("Válido (legenda)"))
+                                p.addVotosLegenda(votos);                                 
+                        }
+                    }*/
                 
                 } catch(Exception e){
                     e.printStackTrace();

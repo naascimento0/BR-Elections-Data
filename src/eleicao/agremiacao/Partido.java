@@ -79,7 +79,7 @@ public class Partido {
     public Candidato getCandidatoMenosVotado() {
         Candidato menosVotado = candidatos.values().stream().findFirst().get();
         for(Candidato c : candidatos.values()) {
-            if(c.getQuantidadeVotos() < menosVotado.getQuantidadeVotos())
+            if(c.getQuantidadeVotos() < menosVotado.getQuantidadeVotos() && c.isCandidaturaDeferida())
                 menosVotado = c;
         }
 
