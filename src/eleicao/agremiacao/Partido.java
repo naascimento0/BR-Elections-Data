@@ -103,7 +103,7 @@ public class Partido {
             int diff = p2.getVotosTotais() - p1.getVotosTotais();
             if(diff == 0) {
                 // data de nascimento
-                return p2.getNumeroPartido().compareTo(p1.getNumeroPartido());       
+                return p1.getNumeroPartido().compareTo(p2.getNumeroPartido());       
             }
             return diff;
         }

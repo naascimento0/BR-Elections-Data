@@ -49,7 +49,7 @@ public class Estatisticas {
         }
     }
 
-    public static List<Candidato> getCandidatosMaisVotados(HashMap<String, Partido> partidos, int vagas) {
+    public static List<Candidato> getCandidatosMaisVotados(HashMap<String, Partido> partidos) {
         List<Candidato> candidatosMaisVotados = new ArrayList<Candidato>();
         
         for(Partido p : partidos.values()) {
@@ -61,8 +61,6 @@ public class Estatisticas {
 
         Collections.sort(candidatosMaisVotados, new Candidato.ComparadorVotos());
 
-        candidatosMaisVotados = candidatosMaisVotados.subList(0, vagas);
-
         return candidatosMaisVotados;
     }
 
@@ -73,24 +71,62 @@ public class Estatisticas {
         return intersection;
     }
 
-    public static List<Candidato> getCandidatosEleitosMajoritaria(List<Candidato> candidatosEleitos, List<Candidato> candidatosMaisVotados) {
-        List<Candidato> intersection = getIntersection(candidatosEleitos, candidatosMaisVotados);
+    public static void printCandidatosEleitosMajoritaria(List<Candidato> candidatosEleitos, List<Candidato> candidatosMaisVotados, List<Candidato> candidatosMaisVotadosEmVagas, Set<Federacao> federacoes, HashMap<String, Partido> partidos) {
+        List<Candidato> intersection = getIntersection(candidatosEleitos, candidatosMaisVotadosEmVagas);
         // https://stackoverflow.com/questions/18644579/getting-the-difference-between-two-sets
-        List<Candidato> candidatosEleitosMajoritaria = candidatosMaisVotados.stream().filter(c -> !intersection.contains(c)).collect(Collectors.toList());
+        List<Candidato> candidatosEleitosMajoritaria = candidatosMaisVotadosEmVagas.stream().filter(c -> !intersection.contains(c)).collect(Collectors.toList());
 
         Collections.sort(candidatosEleitosMajoritaria, new Candidato.ComparadorVotos());
 
-        return candidatosEleitosMajoritaria;
+        for(Candidato c : candidatosEleitosMajoritaria) {
+            int i = 0;
+            for(Candidato c2 : candidatosMaisVotados) {
+                i++;
+                if(c2.getNumeroCandidato().equals(c.getNumeroCandidato()))
+                    break;
+            }
+            System.out.print(i + " - ");
+            for(Federacao f : federacoes) {
+                if(f.getNumeroFederacao() == c.getNumeroFederacao()) {
+                    System.out.print("*");
+                    break;
+                }
+            }
+
+            Partido p = partidos.get(c.getNumeroCandidato().substring(0, 2));
+
+            System.out.print(c);
+            System.out.printf(Locale.forLanguageTag("pt-BR"), " (%s, %,d votos)\n", p.getSiglaPartido(), c.getQuantidadeVotos());
+        }
     }
 
-    public static List<Candidato> getCandidatosEleitosProporcional(List<Candidato> candidatosEleitos, List<Candidato> candidatosMaisVotados) {
-        List<Candidato> intersection = getIntersection(candidatosEleitos, candidatosMaisVotados);
+    public static void printCandidatosEleitosProporcional(List<Candidato> candidatosEleitos, List<Candidato> candidatosMaisVotados, List<Candidato> candidatosMaisVotadosEmVagas, Set<Federacao> federacoes, HashMap<String, Partido> partidos) {
+        List<Candidato> intersection = getIntersection(candidatosEleitos, candidatosMaisVotadosEmVagas);
         
         List<Candidato> candidatosEleitosProporcional = candidatosEleitos.stream().filter(c -> !intersection.contains(c)).collect(Collectors.toList());
 
         Collections.sort(candidatosEleitosProporcional, new Candidato.ComparadorVotos());
 
-        return candidatosEleitosProporcional;
+        for(Candidato c : candidatosEleitosProporcional) {
+            int i = 0;
+            for(Candidato c2 : candidatosMaisVotados) {
+                i++;
+                if(c2.getNumeroCandidato().equals(c.getNumeroCandidato()))
+                    break;
+            }
+            System.out.print(i + " - ");
+            for(Federacao f : federacoes) {
+                if(f.getNumeroFederacao() == c.getNumeroFederacao()) {
+                    System.out.print("*");
+                    break;
+                }
+            }
+
+            Partido p = partidos.get(c.getNumeroCandidato().substring(0, 2));
+
+            System.out.print(c);
+            System.out.printf(Locale.forLanguageTag("pt-BR"), " (%s, %,d votos)\n", p.getSiglaPartido(), c.getQuantidadeVotos());
+        }
     }
 
     public static void printPartidosComVotos(List<Partido> partidos) {
@@ -110,7 +146,24 @@ public class Estatisticas {
                 if(c.isEleito()) qtdEleitos++;
             }
 
-            System.out.printf(Locale.forLanguageTag("pt-BR"), "%,d votos (%,d nominais e %,d de legenda), %d candidatos eleitos\n", (qtdVotosLegenda + qtdVotosNominais), qtdVotosNominais, qtdVotosLegenda, qtdEleitos);
+            if(qtdVotosLegenda + qtdVotosNominais > 1)
+                System.out.printf(Locale.forLanguageTag("pt-BR"), "%,d votos ", (qtdVotosLegenda + qtdVotosNominais));
+            else
+                System.out.printf(Locale.forLanguageTag("pt-BR"), "%,d voto ", (qtdVotosLegenda + qtdVotosNominais));
+            
+            if(qtdVotosNominais > 1)
+                System.out.printf(Locale.forLanguageTag("pt-BR"), "(%,d nominais e ", qtdVotosNominais);
+            else
+                System.out.printf(Locale.forLanguageTag("pt-BR"), "(%,d nominal e ", qtdVotosNominais);
+
+            System.out.printf(Locale.forLanguageTag("pt-BR"), "%,d de legenda), ", qtdVotosLegenda);
+
+            if(qtdEleitos != 1 && qtdEleitos != 0)
+                System.out.printf(Locale.forLanguageTag("pt-BR"), "%d candidatos eleitos\n", qtdEleitos);
+            else
+                System.out.printf(Locale.forLanguageTag("pt-BR"), "%d candidato eleito\n", qtdEleitos);
+
+            i++;
         }
     }
 
@@ -125,7 +178,17 @@ public class Estatisticas {
 
             System.out.print(i + " - ");
             System.out.print(p.getSiglaPartido() + " - " + p.getNumeroPartido() + ", " + primeiroColocado.getNomeNaUrna() + " (" + primeiroColocado.getNumeroCandidato() + ", ");
-            System.out.printf(Locale.forLanguageTag("pt-BR"), "%,d votos / %s (%s, %,d votos)\n", primeiroColocado.getQuantidadeVotos(), ultimoColocado.getNomeNaUrna(), ultimoColocado.getNumeroCandidato(), ultimoColocado.getQuantidadeVotos());
+
+            if(primeiroColocado.getQuantidadeVotos() > 1)
+                System.out.printf(Locale.forLanguageTag("pt-BR"), "%,d votos) / %s (%s, ", primeiroColocado.getQuantidadeVotos(), ultimoColocado.getNomeNaUrna(), ultimoColocado.getNumeroCandidato());
+            else
+                System.out.printf(Locale.forLanguageTag("pt-BR"), "%,d voto) / %s (%s, ", primeiroColocado.getQuantidadeVotos(), ultimoColocado.getNomeNaUrna(), ultimoColocado.getNumeroCandidato());
+
+            if(ultimoColocado.getQuantidadeVotos() > 1)
+                System.out.printf(Locale.forLanguageTag("pt-BR"), "%,d votos)\n", ultimoColocado.getQuantidadeVotos());
+            else
+                System.out.printf(Locale.forLanguageTag("pt-BR"), "%,d voto)\n", ultimoColocado.getQuantidadeVotos());
+
             i++;
         }
     }
@@ -163,8 +226,8 @@ public class Estatisticas {
                 qtdFeminino++;
         }
 
-        System.out.printf(Locale.forLanguageTag("pt-BR"), "Masculino: %,d (%.2f%%)\n", qtdMasculino, (qtdMasculino * 100.0 / candidatosEleitos.size()));
         System.out.printf(Locale.forLanguageTag("pt-BR"), "Feminino: %,d (%.2f%%)\n", qtdFeminino, (qtdFeminino * 100.0 / candidatosEleitos.size()));
+        System.out.printf(Locale.forLanguageTag("pt-BR"), "Masculino: %,d (%.2f%%)\n", qtdMasculino, (qtdMasculino * 100.0 / candidatosEleitos.size()));
     }
 
     public static void printTotalVotos(HashMap<String, Partido> partidos) {

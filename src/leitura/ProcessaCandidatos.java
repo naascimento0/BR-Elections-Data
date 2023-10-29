@@ -32,7 +32,7 @@ public class ProcessaCandidatos {
         
         HashMap<String, Partido> partidos = new HashMap<>();
 
-        try(FileInputStream entrada = new FileInputStream("arquivos/consulta_cand_2022_SC.csv"); //depois colocar para ler o diretorio do arquivo no argv
+        try(FileInputStream entrada = new FileInputStream("arquivos/consulta_cand_2022_ES.csv"); //depois colocar para ler o diretorio do arquivo no argv
         Scanner s = new Scanner(entrada, "ISO-8859-1")) {
             s.nextLine();
             while(s.hasNextLine()) {
@@ -92,7 +92,7 @@ public class ProcessaCandidatos {
                         partidos.put(numeroPartido, partido);
                     }
                     //&& (nomeTipoDestVotos.equals("Válido") || nomeTipoDestVotos.equals("Válido (legenda)"))
-                    if(Integer.parseInt(codigoCargo) == cargo) {
+                    if(Integer.parseInt(codigoCargo) == cargo && (nomeTipoDestVotos.equals("Válido") || nomeTipoDestVotos.equals("Válido (legenda)"))) {
                         Candidato c = new Candidato(nome, nomeNaUrna, Integer.parseInt(codigoSituacaoCandidato), numeroCandidato,
                             Integer.parseInt(numeroFederacao), LocalDate.parse(dataNascimento, formatter), Integer.parseInt(codigoSituacaoTurno), Genero.getGenero(codigoGenero), nomeTipoDestVotos);
                         partido.addCandidato(c);

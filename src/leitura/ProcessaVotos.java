@@ -13,7 +13,7 @@ public class ProcessaVotos {
         String numeroCandidato = "";
         String qtdVotos = "";
 
-        try(FileInputStream entrada = new FileInputStream("arquivos/votacao_secao_2022_SC.csv");
+        try(FileInputStream entrada = new FileInputStream("arquivos/votacao_secao_2022_ES.csv");
         Scanner s = new Scanner(entrada, "ISO-8859-1")) {
             s.nextLine();
             while(s.hasNextLine()) {
@@ -44,9 +44,6 @@ public class ProcessaVotos {
                     }
                     
                     Partido p = partidos.get(numeroCandidato.substring(0, 2));
-                    // System.out.println("SIGLA: " + p.getSiglaPartido());
-                    // System.out.println("CODIGO CARGO: " + codigoCargo);
-                    // System.out.println("NUMERO CANDIDATO: " + numeroCandidato);
 
                     Candidato c = null;
                     
@@ -62,7 +59,7 @@ public class ProcessaVotos {
 
                     if(c.getNomeTipoDestVotos().equals("Válido (legenda)"))
                         p.addVotosLegenda(Integer.parseInt(qtdVotos));
-                    else {
+                    else if(c.getNomeTipoDestVotos().equals("Válido")) {
                         c.addQuantidadeVotos(Integer.parseInt(qtdVotos));
                         p.addVotosNominais(Integer.parseInt(qtdVotos));
                     }

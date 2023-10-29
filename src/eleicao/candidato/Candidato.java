@@ -61,6 +61,10 @@ public class Candidato {
         return nomeNaUrna;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
     public Genero getGenero() {
         return genero;
     }
@@ -71,7 +75,7 @@ public class Candidato {
 
     @Override
     public String toString() {
-        return "" + nome;
+        return "" + nomeNaUrna;
     }
 
     public static class ComparadorVotos implements Comparator<Candidato> {

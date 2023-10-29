@@ -39,20 +39,21 @@ public class App {
         System.out.println();
         // terceiro relatorio
         System.out.println("Candidatos mais votados (em ordem decrescente de votação e respeitando número de vagas):");
-        List<Candidato> candidatosMaisVotados = Estatisticas.getCandidatosMaisVotados(partidos, candidatosEleitos.size());
-        Estatisticas.printCandidatos(candidatosMaisVotados, federacoes, partidos);
+        List<Candidato> candidatosMaisVotados = Estatisticas.getCandidatosMaisVotados(partidos);
+        List<Candidato> candidatosMaisVotadosEmVagas = candidatosMaisVotados.subList(0, candidatosEleitos.size());
+        Estatisticas.printCandidatos(candidatosMaisVotadosEmVagas, federacoes, partidos);
 
         System.out.println();
         // quarto relatorio...
         System.out.println("Teriam sido eleitos se a votação fosse majoritária, e não foram eleitos:");
-        List<Candidato> candidatosEleitosMajoritaria = Estatisticas.getCandidatosEleitosMajoritaria(candidatosEleitos, candidatosMaisVotados);
-        Estatisticas.printCandidatos(candidatosEleitosMajoritaria, federacoes, partidos);
+        System.out.println("(com sua posição no ranking de mais votados)");
+        Estatisticas.printCandidatosEleitosMajoritaria(candidatosEleitos, candidatosMaisVotados, candidatosMaisVotadosEmVagas, federacoes, partidos);
 
         System.out.println();
         // quinto relatorio...
         System.out.println("Eleitos, que se beneficiaram do sistema proporcional:");
-        List<Candidato> candidatosEleitosProporcional = Estatisticas.getCandidatosEleitosProporcional(candidatosEleitos, candidatosMaisVotados);
-        Estatisticas.printCandidatos(candidatosEleitosProporcional, federacoes, partidos);
+        System.out.println("(com sua posição no ranking de mais votados)");
+        Estatisticas.printCandidatosEleitosProporcional(candidatosEleitos, candidatosMaisVotados, candidatosMaisVotadosEmVagas, federacoes, partidos);
 
         System.out.println();
         // sexto relatorio...
