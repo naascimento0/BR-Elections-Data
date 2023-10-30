@@ -11,7 +11,6 @@ import eleicao.candidato.Genero;
 
 import eleicao.agremiacao.Partido;
 
-
 import java.time.LocalDate;
 
 public class ProcessaCandidatos {

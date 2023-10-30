@@ -14,7 +14,6 @@ import eleicao.candidato.Genero;
 import eleicao.agremiacao.Federacao;
 import eleicao.agremiacao.Partido;
 
-
 public class Estatisticas {
     public static List<Candidato> getCandidatosEleitosOrdenados(HashMap<String, Partido> partidos) {
         List<Candidato> candidatosEleitos = new ArrayList<Candidato>();
