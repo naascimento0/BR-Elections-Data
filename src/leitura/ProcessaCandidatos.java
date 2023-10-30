@@ -1,7 +1,7 @@
 package leitura;
 
 import java.io.FileInputStream;
-
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -12,27 +12,26 @@ import eleicao.candidato.Genero;
 import eleicao.agremiacao.Partido;
 
 
-//import eleicao.Situacao;
 import java.time.LocalDate;
 
 public class ProcessaCandidatos {
-    public static HashMap<String, Partido> processarCandidatos(int cargo) throws Exception {
+    public static HashMap<String, Partido> processarCandidatos(int cargo, String filePath) throws Exception, FileNotFoundException {
         String nome = "";
         String nomeNaUrna = "";
-        String codigoCargo = ""; //6=federal 7=estadual
-        String codigoSituacaoCandidato = ""; //processar apenas valores 2 ou 16
+        String codigoCargo = ""; 
+        String codigoSituacaoCandidato = ""; 
         String numeroCandidato = ""; 
         String numeroPartido = "";
         String siglaPartido = "";
-        String numeroFederacao = ""; //-1 representa nao participacao em federacao
-        String dataNascimento = ""; // tem que ser dia/mes/ano (nao sei se localdate deixa nesse formato)
-        String codigoSituacaoTurno = ""; // 2 ou 3 = eleito
-        String codigoGenero = ""; // 2 = MASCULINO 4 = FEMININO
-        String nomeTipoDestVotos = ""; // nominal ou legenda  
+        String numeroFederacao = ""; 
+        String dataNascimento = ""; 
+        String codigoSituacaoTurno = ""; 
+        String codigoGenero = ""; 
+        String nomeTipoDestVotos = ""; 
         
         HashMap<String, Partido> partidos = new HashMap<>();
 
-        try(FileInputStream entrada = new FileInputStream("arquivos/consulta_cand_2022_ES.csv"); //depois colocar para ler o diretorio do arquivo no argv
+        try(FileInputStream entrada = new FileInputStream(filePath); 
         Scanner s = new Scanner(entrada, "ISO-8859-1")) {
             s.nextLine();
             while(s.hasNextLine()) {
@@ -96,13 +95,13 @@ public class ProcessaCandidatos {
                         partidos.get(numeroPartido).addCandidato(c);
                     }
 
-                } catch(Exception e){
+                } catch(Exception e) { 
                     e.printStackTrace();
                 }
             }
 
-        } catch(Exception e) {
-            e.printStackTrace();
+        } catch(FileNotFoundException e) {
+            throw new FileNotFoundException("Arquivo não encontrado");
         }
 
         return partidos;

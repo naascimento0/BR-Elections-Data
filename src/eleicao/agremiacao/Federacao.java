@@ -21,25 +21,4 @@ public class Federacao {
     public void removePartido(Partido partido){
         partidos.remove(partido);
     }
-
-    // @Override
-    /*public String toString() {
-        String text = "Federacao [partidos= ";
-        
-        for(Partido partido : partidos){
-            text += partido + " ";
-        }
-
-        return text;
-    }*/
-
-    public String toString() {
-        String text = "Federacao [partidos= ";
-        
-        for(Partido partido : partidos){
-            text += partido.getSiglaPartido() + ", ";
-        }
-
-        return text;
-    }
 }

@@ -6,10 +6,10 @@ import java.util.Comparator;
 public class Candidato {
     private String nome;
     private String nomeNaUrna;
-    private int codigoSituacaoCandidato;
+    private int codigoSituacaoCandidato; // 2 ou 16 = candidato deferido
     private String numeroCandidato; 
-    private int numeroFederacao; //-1 representa nao participacao em federacao
-    private LocalDate dataNascimento; // tem que ser dia/mes/ano (nao sei se localdate deixa nesse formato)
+    private int numeroFederacao; // -1 representa nao participacao em federacao
+    private LocalDate dataNascimento; // dia/mes/ano 
     private int codigoSituacaoTurno; // 2 ou 3 = eleito
     private Genero genero;
     private String nomeTipoDestVotos; // nominal ou legenda 
@@ -39,10 +39,6 @@ public class Candidato {
 
     public int getQuantidadeVotos() {
         return quantidadeVotos;
-    }
-
-    public void addQuantidadeVotos(int quantidadeVotos) {
-        this.quantidadeVotos += quantidadeVotos;
     }
 
     public String getNomeTipoDestVotos() {
@@ -76,6 +72,10 @@ public class Candidato {
     public int getCodigoSituacaoCandidato() {
         return codigoSituacaoCandidato;
     }
+    
+    public void addQuantidadeVotos(int quantidadeVotos) {
+        this.quantidadeVotos += quantidadeVotos;
+    }
 
     @Override
     public String toString() {
@@ -86,10 +86,8 @@ public class Candidato {
         @Override
         public int compare(Candidato c1, Candidato c2){
             int diff = c2.getQuantidadeVotos() - c1.getQuantidadeVotos();
-            if(diff == 0) {
-                // data de nascimento
+            if(diff == 0) 
                 return c1.getDataNascimento().compareTo(c2.getDataNascimento());       
-            }
             return diff;
         }
     }

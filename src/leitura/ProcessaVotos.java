@@ -1,6 +1,7 @@
 package leitura;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -8,12 +9,12 @@ import eleicao.agremiacao.Partido;
 import eleicao.candidato.Candidato;
 
 public class ProcessaVotos {
-    public static void processarVotos(HashMap<String, Partido> partidos, int cargo) throws Exception {
+    public static void processarVotos(HashMap<String, Partido> partidos, int cargo, String filePath) throws Exception, FileNotFoundException {
         String codigoCargo = "";
         String numeroCandidato = "";
         String qtdVotos = "";
 
-        try(FileInputStream entrada = new FileInputStream("arquivos/votacao_secao_2022_ES.csv");
+        try(FileInputStream entrada = new FileInputStream(filePath);
         Scanner s = new Scanner(entrada, "ISO-8859-1")) {
             s.nextLine();
             while(s.hasNextLine()) {
@@ -62,30 +63,13 @@ public class ProcessaVotos {
                             }
                         }
                     }
-
-                    /*if(Integer.parseInt(codigoCargo) == cargo) {
-                        Partido p = partidos.get(numeroCandidato.substring(0, 2));
-                        Candidato c = p.getCandidato(numeroCandidato);
-                        int votos = Integer.parseInt(qtdVotos);
-
-                        if(c == null){
-                            p.addVotosLegenda(votos);
-                        }
-                        else{                                     
-                             if(c.isCandidaturaDeferida()){
-                                c.addQuantidadeVotos(votos);
-                                p.addVotosNominais(votos);
-                            }else if(c.getNomeTipoDestVotos().equals("Válido (legenda)"))
-                                p.addVotosLegenda(votos);                                 
-                        }
-                    }*/
                 
                 } catch(Exception e){
                     e.printStackTrace();
                 }
             }
-        } catch(Exception e) {
-            e.printStackTrace();
+        } catch(FileNotFoundException e) {
+            throw new FileNotFoundException("Arquivo não encontrado");
         }
     }
 }

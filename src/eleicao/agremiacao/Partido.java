@@ -19,11 +19,6 @@ public class Partido {
         this.numeroPartido = numeroPartido;
     }
 
-    public void addCandidato(Candidato c) {
-        if(c == null) return;
-        candidatos.put(c.getNumeroCandidato(), c);
-    }
-
     public List<Candidato> getCandidatos() {
         return new LinkedList<Candidato>(candidatos.values());
     }
@@ -32,32 +27,37 @@ public class Partido {
         return this.siglaPartido;
     }
 
-    public void addVotosLegenda(int votosLegenda) {
-        this.votosLegenda += votosLegenda;
-    }
-
     public int getVotosLegenda() {
         return this.votosLegenda;
-    }
-
-    public Candidato getCandidato(String numeroCandidato) {
-        return candidatos.get(numeroCandidato);
     }
 
     public String getNumeroPartido() {
         return numeroPartido;
     }
 
+    public Candidato getCandidato(String numeroCandidato) {
+        return candidatos.get(numeroCandidato);
+    }
+
     public int getVotosNominais() {
         return votosNominais;
     }
 
-    public void addVotosNominais(int qtdVotos) {
-        this.votosNominais += qtdVotos;
-    }
-
     public int getVotosTotais() {
         return votosLegenda + votosNominais;
+    }
+
+    public void addCandidato(Candidato c) {
+        if(c == null) return;
+        candidatos.put(c.getNumeroCandidato(), c);
+    }
+
+    public void addVotosLegenda(int votosLegenda) {
+        this.votosLegenda += votosLegenda;
+    }
+
+    public void addVotosNominais(int qtdVotos) {
+        this.votosNominais += qtdVotos;
     }
 
     public Candidato getCandidatoMaisVotado() {
@@ -82,29 +82,16 @@ public class Partido {
             if(c.getQuantidadeVotos() < menosVotado.getQuantidadeVotos() && c.isCandidaturaDeferida())
                 menosVotado = c;
         }
-
+        
         return menosVotado;
     }
-
-    /*@Override
-    public String toString() {
-        String text = "Partido [siglaPartido=" + siglaPartido + ", numeroPartido=" + numeroPartido + ", candidatos= ";
-        
-        for(Candidato candidato : candidatos){
-            text += candidato + " ";
-        }
-
-        return text;
-    }*/
 
     public static class ComparadorVotos implements Comparator<Partido> {
         @Override
         public int compare(Partido p1, Partido p2){
             int diff = p2.getVotosTotais() - p1.getVotosTotais();
-            if(diff == 0) {
-                // data de nascimento
+            if(diff == 0) 
                 return p1.getNumeroPartido().compareTo(p2.getNumeroPartido());       
-            }
             return diff;
         }
     }
@@ -120,9 +107,8 @@ public class Partido {
                 return -1;
 
             int diff = c2.getQuantidadeVotos() - c1.getQuantidadeVotos();
-            if(diff == 0) {
+            if(diff == 0) 
                 return c1.getNumeroCandidato().compareTo(c2.getNumeroCandidato());       
-            }
             return diff;
         }
     }

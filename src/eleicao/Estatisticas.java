@@ -21,12 +21,10 @@ public class Estatisticas {
         
         for(Partido p : partidos.values()) {
             List<Candidato> candidatos = p.getCandidatos();
-
             for(Candidato c : candidatos) { if(c.isEleito()) candidatosEleitos.add(c); }
         }
 
         Collections.sort(candidatosEleitos, new Candidato.ComparadorVotos());
-
         return candidatosEleitos;
     }
 
@@ -54,20 +52,17 @@ public class Estatisticas {
         
         for(Partido p : partidos.values()) {
             List<Candidato> candidatos = p.getCandidatos();
-
             for(Candidato c : candidatos)
                 candidatosMaisVotados.add(c);
         }
 
         Collections.sort(candidatosMaisVotados, new Candidato.ComparadorVotos());
-
         return candidatosMaisVotados;
     }
 
     private static List<Candidato> getIntersection(List<Candidato> list1, List<Candidato> list2) {
         // https://stackoverflow.com/questions/2400838/efficient-intersection-of-two-liststring-in-java
         List<Candidato> intersection = list1.stream().filter(list2::contains).collect(Collectors.toList());
-
         return intersection;
     }
 
@@ -195,7 +190,6 @@ public class Estatisticas {
     
     public static void printEleitosPorFaixaEtaria(List<Candidato> candidatosEleitos, LocalDate date) {
         int menor30 = 0, menor40 = 0, menor50 = 0,  menor60 = 0, maior60 = 0;
-
         for(Candidato c : candidatosEleitos) {
             int idade = date.getYear() - c.getDataNascimento().getYear();
             if(idade < 30)
@@ -232,7 +226,6 @@ public class Estatisticas {
 
     public static void printTotalVotos(HashMap<String, Partido> partidos) {
         int qtdVotosLegenda = 0, qtdVotosNominais = 0;
-
         for(Partido p : partidos.values()) {
             qtdVotosLegenda += p.getVotosLegenda();
             qtdVotosNominais += p.getVotosNominais();
