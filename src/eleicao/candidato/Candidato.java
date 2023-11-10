@@ -77,6 +77,10 @@ public class Candidato {
         this.quantidadeVotos += quantidadeVotos;
     }
 
+    public String getNumeroPartido() {
+        return numeroCandidato.substring(0, 2);                
+    }
+
     @Override
     public String toString() {
         return "" + nomeNaUrna;

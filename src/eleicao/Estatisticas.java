@@ -5,9 +5,11 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import eleicao.candidato.Candidato;
 import eleicao.candidato.Genero;
@@ -166,9 +168,12 @@ public class Estatisticas {
 
         int i = 1;
         for(Partido p : partidos) {
-            if(p.getCandidatos().size() == 0) continue;
-            Candidato primeiroColocado = p.getCandidatoMaisVotado();
-            Candidato ultimoColocado = p.getCandidatoMenosVotado();
+            LinkedList<Candidato> candidatos = new LinkedList<>(p.getCandidatos());
+            Collections.sort(candidatos, new Candidato.ComparadorVotos());
+
+            if(candidatos.size() == 0) continue;
+            Candidato primeiroColocado = candidatos.getFirst();
+            Candidato ultimoColocado = candidatos.getLast();
 
             System.out.print(i + " - ");
             System.out.print(p.getSiglaPartido() + " - " + p.getNumeroPartido() + ", " + primeiroColocado.getNomeNaUrna() + " (" + primeiroColocado.getNumeroCandidato() + ", ");
@@ -190,7 +195,7 @@ public class Estatisticas {
     public static void printEleitosPorFaixaEtaria(List<Candidato> candidatosEleitos, LocalDate date) {
         int menor30 = 0, menor40 = 0, menor50 = 0,  menor60 = 0, maior60 = 0;
         for(Candidato c : candidatosEleitos) {
-            int idade = date.getYear() - c.getDataNascimento().getYear();
+            int idade = Period.between(c.getDataNascimento(), date).getYears();
             if(idade < 30)
                 menor30++;
             else if(idade < 40)
@@ -203,11 +208,11 @@ public class Estatisticas {
                 maior60++;
         }
 
-        System.out.printf(Locale.forLanguageTag("pt-BR"), "Idade < 30: %,d (%.2f%%)\n", menor30, (menor30 * 100.0 / candidatosEleitos.size()));
+        System.out.printf(Locale.forLanguageTag("pt-BR"), "      Idade < 30: %,d (%.2f%%)\n", menor30, (menor30 * 100.0 / candidatosEleitos.size()));
         System.out.printf(Locale.forLanguageTag("pt-BR"), "30 <= Idade < 40: %,d (%.2f%%)\n", menor40, (menor40 * 100.0 / candidatosEleitos.size()));
         System.out.printf(Locale.forLanguageTag("pt-BR"), "40 <= Idade < 50: %,d (%.2f%%)\n", menor50, (menor50 * 100.0 / candidatosEleitos.size()));
         System.out.printf(Locale.forLanguageTag("pt-BR"), "50 <= Idade < 60: %,d (%.2f%%)\n", menor60, (menor60 * 100.0 / candidatosEleitos.size()));
-        System.out.printf(Locale.forLanguageTag("pt-BR"), "60 <= Idade : %,d (%.2f%%)\n", maior60, (maior60 * 100.0 / candidatosEleitos.size()));
+        System.out.printf(Locale.forLanguageTag("pt-BR"), "60 <= Idade     : %,d (%.2f%%)\n", maior60, (maior60 * 100.0 / candidatosEleitos.size()));
     }
 
     public static void printEleitosPorGenero(List<Candidato> candidatosEleitos) {
@@ -219,7 +224,7 @@ public class Estatisticas {
                 qtdFeminino++;
         }
 
-        System.out.printf(Locale.forLanguageTag("pt-BR"), "Feminino: %,d (%.2f%%)\n", qtdFeminino, (qtdFeminino * 100.0 / candidatosEleitos.size()));
+        System.out.printf(Locale.forLanguageTag("pt-BR"), "Feminino:  %,d (%.2f%%)\n", qtdFeminino, (qtdFeminino * 100.0 / candidatosEleitos.size()));
         System.out.printf(Locale.forLanguageTag("pt-BR"), "Masculino: %,d (%.2f%%)\n", qtdMasculino, (qtdMasculino * 100.0 / candidatosEleitos.size()));
     }
 
@@ -230,8 +235,8 @@ public class Estatisticas {
             qtdVotosNominais += p.getVotosNominais();
         }
 
-        System.out.printf(Locale.forLanguageTag("pt-BR"), "Total de votos válidos: %,d\n", qtdVotosLegenda + qtdVotosNominais);
-        System.out.printf(Locale.forLanguageTag("pt-BR"), "Total de votos nominais: %,d (%.2f%%)\n", qtdVotosNominais, (qtdVotosNominais * 100.0 / (qtdVotosLegenda + qtdVotosNominais)));
+        System.out.printf(Locale.forLanguageTag("pt-BR"), "Total de votos válidos:    %,d\n", qtdVotosLegenda + qtdVotosNominais);
+        System.out.printf(Locale.forLanguageTag("pt-BR"), "Total de votos nominais:   %,d (%.2f%%)\n", qtdVotosNominais, (qtdVotosNominais * 100.0 / (qtdVotosLegenda + qtdVotosNominais)));
         System.out.printf(Locale.forLanguageTag("pt-BR"), "Total de votos de legenda: %,d (%.2f%%)\n", qtdVotosLegenda, (qtdVotosLegenda * 100.0 / (qtdVotosLegenda + qtdVotosNominais)));
     }
 }

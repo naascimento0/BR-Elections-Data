@@ -106,10 +106,7 @@ public class Partido {
             if(c2 == null)
                 return -1;
 
-            int diff = c2.getQuantidadeVotos() - c1.getQuantidadeVotos();
-            if(diff == 0) 
-                return c1.getNumeroCandidato().compareTo(c2.getNumeroCandidato());       
-            return diff;
+            return c2.getQuantidadeVotos() - c1.getQuantidadeVotos();
         }
     }
 }
