@@ -172,8 +172,19 @@ public class Estatisticas {
             Collections.sort(candidatos, new Candidato.ComparadorVotos());
 
             if(candidatos.size() == 0) continue;
+
             Candidato primeiroColocado = candidatos.getFirst();
-            Candidato ultimoColocado = candidatos.getLast();
+            Candidato ultimoColocado;
+            
+            int j = 0;
+            int size = candidatos.size();
+            do {
+                if(++j == size) {
+                    ultimoColocado = primeiroColocado;
+                    break;
+                }
+                ultimoColocado = candidatos.get(size - j);
+            } while(!ultimoColocado.isCandidaturaDeferida());
 
             System.out.print(i + " - ");
             System.out.print(p.getSiglaPartido() + " - " + p.getNumeroPartido() + ", " + primeiroColocado.getNomeNaUrna() + " (" + primeiroColocado.getNumeroCandidato() + ", ");
